@@ -9,18 +9,25 @@ def signupPage(request):
         pass1=request.POST.get('password')
         pass2=request.POST.get('confirmpassword')
         #print(uname,eml,pass1)
-        
-        my_user=User.objects.create_user(uname,eml,pass1)
-        my_user.save()
+        if pass1==pass2:
+            if User.objects.filter(username=uname).exists():
+                return HttpResponse("Username already taken!")
+            elif User.objects.filter(email=eml).exists():
+                return HttpResponse("Email already taken!")
+            else:
+                my_user=User.objects.create_user(uname,eml,pass1)
+                my_user.save()
+        else:
+            return HttpResponse("Password not matching!")
         return redirect('login')
         #return HttpResponse("user created successfully!")
     return render(request,'signup.html')
 
 def loginPage(request):
     if request.method=="POST":
-        username1=request.POST.get('username')
-        password1=request.POST.get('password')
-        user=authenticate(request,username=username1,password=password1)
+        username=request.POST.get('username')
+        password=request.POST.get('password')
+        user=authenticate(request,username=username,password=password)
         if user is not None:
             login(request,user)
             return redirect('home')
