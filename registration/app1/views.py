@@ -9,16 +9,26 @@ def signupPage(request):
         pass1=request.POST.get('password')
         pass2=request.POST.get('confirmpassword')
         #print(uname,eml,pass1)
-        if pass1==pass2:
-            if User.objects.filter(username=uname).exists():
-                return HttpResponse("Username already taken!")
-            elif User.objects.filter(email=eml).exists():
-                return HttpResponse("Email already taken!")
-            else:
-                my_user=User.objects.create_user(uname,eml,pass1)
-                my_user.save()
+
+        if len(pass1)<8:
+           return HttpResponse("password must be of atleast 8 characters")
+        if(pass1.isalnum()==pass1 or pass1.upper()==pass1 or pass1.lower()==pass1):
+            return HttpResponse("pass must have atleast 1 uppercase character, 1 digit and 1 lowercase character!")
+        elif(pass1.isalnum()==pass1 and pass1.upper()==pass1 and pass1.lower()==pass1):
+            return HttpResponse("pass must have atleast 1 uppercase character, 1 digit and 1 lowercase character!")
+        elif(pass1.isalnum()==pass1 and pass1.upper()==pass1 and pass1.lower()==pass1):
+            return HttpResponse("pass must have atleast 1 uppercase character, 1 digit and 1 lowercase character!")
         else:
-            return HttpResponse("Password not matching!")
+            if pass1==pass2:
+                if User.objects.filter(username=uname).exists():
+                    return HttpResponse("Username already taken!")
+                elif User.objects.filter(email=eml).exists():
+                    return HttpResponse("Email already taken!")
+                else:
+                    my_user=User.objects.create_user(uname,eml,pass1)
+                    my_user.save()
+            else:
+                return HttpResponse("Password not matching!")
         return redirect('login')
         #return HttpResponse("user created successfully!")
     return render(request,'signup.html')
